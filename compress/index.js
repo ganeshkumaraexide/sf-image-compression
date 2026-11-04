@@ -346,10 +346,34 @@ module.exports = async function (context, req) {
         const host = new URL(url).hostname;
         result.push("step5");
 
-        context.res = {
-            status: 200,
-            body: result
-        };
+const response = await fetch(url);
+
+result.push("step6");
+
+if (!response.ok) {
+    context.res = {
+        status: 200,
+        body: {
+            step: "response-not-ok",
+            status: response.status,
+            statusText: response.statusText
+        }
+    };
+    return;
+}
+
+result.push("step7");
+
+let input = Buffer.from(
+    await response.arrayBuffer()
+);
+
+result.push("step8");
+
+context.res = {
+    status: 200,
+    body: result
+};
 
     } catch(e) {
 
