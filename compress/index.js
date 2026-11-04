@@ -370,9 +370,37 @@ let input = Buffer.from(
 
 result.push("step8");
 
+let convertedFromHeic = false;
+
+if (isHeic(input)) {
+
+    result.push("step9-heic-detected");
+
+    input = Buffer.from(
+        await convert({
+            buffer: input,
+            format: "JPEG",
+            quality: 0.9
+        })
+    );
+
+    result.push("step10-heic-converted");
+
+    convertedFromHeic = true;
+}
+
+result.push("step11-before-metadata");
+
+const meta = await sharp(input).metadata();
+
+result.push("step12-after-metadata");
+
 context.res = {
     status: 200,
-    body: result
+    body: {
+        steps: result,
+        format: meta.format
+    }
 };
 
     } catch(e) {
