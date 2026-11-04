@@ -289,6 +289,36 @@
 //   }
 // };
 
+// module.exports = async function (context, req) {
+
+//     try {
+
+//         const result = [];
+
+//         result.push("step1");
+
+//         const sharp = require('sharp');
+//         result.push("sharp");
+
+//         const convert = require('heic-convert');
+//         result.push("heic");
+
+//         context.res = {
+//             status: 200,
+//             body: result
+//         };
+
+//     } catch(e) {
+
+//         context.res = {
+//             status: 500,
+//             body: String(e.message || e)
+//         };
+
+//     }
+
+// };
+
 module.exports = async function (context, req) {
 
     try {
@@ -297,11 +327,24 @@ module.exports = async function (context, req) {
 
         result.push("step1");
 
-        const sharp = require('sharp');
-        result.push("sharp");
+        const body = req.body || {};
+        result.push("step2");
 
-        const convert = require('heic-convert');
-        result.push("heic");
+        const url = body.url;
+        result.push("step3");
+
+        if (!url) {
+            context.res = {
+                status: 400,
+                body: result
+            };
+            return;
+        }
+
+        result.push("step4");
+
+        const host = new URL(url).hostname;
+        result.push("step5");
 
         context.res = {
             status: 200,
